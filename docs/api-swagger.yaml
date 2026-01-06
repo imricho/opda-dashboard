@@ -1,0 +1,1071 @@
+openapi: 3.0.3
+info:
+  title: OPDA Dashboard API
+  version: 0.1.0
+  description: >
+    OpenAPI stubs for OPDA Operations Dashboard (read-first).
+    All endpoints require Bearer JWT unless stated otherwise.
+servers:
+  - url: http://localhost:8088
+    description: Local (via NGINX)
+
+tags:
+  - name: summary
+  - name: incidents
+  - name: workorders
+  - name: certificates
+  - name: contracts
+  - name: drp
+  - name: access
+  - name: oncall
+  - name: people
+  - name: utility
+  - name: lookup
+
+security:
+  - BearerAuth: []
+
+paths:
+  /api/summary:
+    get:
+      tags: [summary]
+      summary: Executive landing page snapshot
+      description: Aggregated operational health, risk, governance, execution, and people readiness.
+      responses:
+        "200":
+          description: Summary snapshot
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SummaryResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /api/incidents:
+    get:
+      tags: [incidents]
+      summary: List incidents
+      parameters:
+        - $ref: "#/components/parameters/StatusParam"
+        - $ref: "#/components/parameters/SeverityParam"
+        - $ref: "#/components/parameters/AppCodeParam"
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
+      responses:
+        "200":
+          description: Incident list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IncidentListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /api/incidents/{incident_id}:
+    get:
+      tags: [incidents]
+      summary: Get incident detail
+      parameters:
+        - $ref: "#/components/parameters/IncidentIdPath"
+      responses:
+        "200":
+          description: Incident detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IncidentDetail"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /api/workorders:
+    get:
+      tags: [workorders]
+      summary: List workorders
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string, example: IN_PROGRESS }
+          required: false
+        - name: assignee
+          in: query
+          schema: { type: string, example: coco }
+          required: false
+        - name: incident_id
+          in: query
+          schema: { type: string, example: INC-20260106-0001 }
+          required: false
+        - $ref: "#/components/parameters/AppCodeParam"
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
+      responses:
+        "200":
+          description: Workorder list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkorderListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /api/workorders/{workorder_id}:
+    get:
+      tags: [workorders]
+      summary: Get workorder detail
+      parameters:
+        - $ref: "#/components/parameters/WorkorderIdPath"
+      responses:
+        "200":
+          description: Workorder detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkorderDetail"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /api/certificates:
+    get:
+      tags: [certificates]
+      summary: List certificates
+      parameters:
+        - name: expiring_in_days
+          in: query
+          required: false
+          schema: { type: integer, minimum: 1, example: 30 }
+        - name: owner_team
+          in: query
+          required: false
+          schema: { type: string, example: OpDA }
+        - name: system
+          in: query
+          required: false
+          schema: { type: string, example: OPDA }
+        - name: status
+          in: query
+          required: false
+          schema: { type: string, example: DUE_SOON }
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
+      responses:
+        "200":
+          description: Certificate list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CertificateListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /api/certificates/{cert_id}:
+    get:
+      tags: [certificates]
+      summary: Get certificate detail
+      parameters:
+        - $ref: "#/components/parameters/CertIdPath"
+      responses:
+        "200":
+          description: Certificate detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CertificateDetail"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /api/contracts:
+    get:
+      tags: [contracts]
+      summary: List contracts
+      parameters:
+        - name: renewal_due_in_days
+          in: query
+          required: false
+          schema: { type: integer, minimum: 1, example: 90 }
+        - name: vendor
+          in: query
+          required: false
+          schema: { type: string, example: PT MII }
+        - name: status
+          in: query
+          required: false
+          schema: { type: string, example: RENEWAL_NOT_STARTED }
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
+      responses:
+        "200":
+          description: Contract list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContractListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /api/contracts/{contract_id}:
+    get:
+      tags: [contracts]
+      summary: Get contract detail
+      parameters:
+        - $ref: "#/components/parameters/ContractIdPath"
+      responses:
+        "200":
+          description: Contract detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContractDetail"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /api/drp:
+    get:
+      tags: [drp]
+      summary: List DRP schedule items
+      parameters:
+        - name: year
+          in: query
+          required: false
+          schema: { type: integer, example: 2026 }
+        - name: status
+          in: query
+          required: false
+          schema: { type: string, example: PLANNED }
+        - name: system
+          in: query
+          required: false
+          schema: { type: string, example: RTGS }
+        - name: due_only
+          in: query
+          required: false
+          schema: { type: boolean, example: true }
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
+      responses:
+        "200":
+          description: DRP list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DrpListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /api/drp/{drp_id}:
+    get:
+      tags: [drp]
+      summary: Get DRP detail
+      parameters:
+        - $ref: "#/components/parameters/DrpIdPath"
+      responses:
+        "200":
+          description: DRP detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DrpDetail"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /api/access/reviews:
+    get:
+      tags: [access]
+      summary: List access reviews (due cycles)
+      parameters:
+        - name: system
+          in: query
+          required: false
+          schema: { type: string, example: CBS }
+        - name: due_only
+          in: query
+          required: false
+          schema: { type: boolean, example: true }
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
+      responses:
+        "200":
+          description: Access review list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessReviewListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /api/access/matrix:
+    get:
+      tags: [access]
+      summary: List access matrix entries
+      parameters:
+        - name: system
+          in: query
+          required: false
+          schema: { type: string, example: CBS }
+        - name: role
+          in: query
+          required: false
+          schema: { type: string, example: DBA }
+        - name: privileged_only
+          in: query
+          required: false
+          schema: { type: boolean, example: true }
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
+      responses:
+        "200":
+          description: Access matrix list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessMatrixListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /api/oncall/today:
+    get:
+      tags: [oncall]
+      summary: Get today's on-call roster
+      responses:
+        "200":
+          description: On-call roster
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OnCallToday"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /api/people/absences:
+    get:
+      tags: [people]
+      summary: List absences (today or week)
+      parameters:
+        - name: range
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [today, week]
+            example: week
+        - name: team
+          in: query
+          required: false
+          schema: { type: string, example: OpDA }
+      responses:
+        "200":
+          description: Absence list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AbsenceListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /api/people/birthdays:
+    get:
+      tags: [people]
+      summary: List birthdays (today/week/month)
+      parameters:
+        - name: range
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [today, week, month]
+            example: week
+        - name: team
+          in: query
+          required: false
+          schema: { type: string, example: OpDA }
+      responses:
+        "200":
+          description: Birthday list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BirthdayListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /api/me:
+    get:
+      tags: [utility]
+      summary: Get current user identity (debug auth)
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MeResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/lookup/apps:
+    get:
+      tags: [lookup]
+      summary: Lookup applications (for filters/ownership mapping)
+      responses:
+        "200":
+          description: Application lookup list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppLookupResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    Unauthorized:
+      description: Unauthorized (missing/invalid token)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            detail: Not authenticated
+    Forbidden:
+      description: Forbidden (insufficient permission)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            detail: Forbidden
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            detail: Not Found
+
+  parameters:
+    LimitParam:
+      name: limit
+      in: query
+      required: false
+      schema: { type: integer, minimum: 1, maximum: 200, default: 50 }
+    OffsetParam:
+      name: offset
+      in: query
+      required: false
+      schema: { type: integer, minimum: 0, default: 0 }
+    StatusParam:
+      name: status
+      in: query
+      required: false
+      schema: { type: string, example: OPEN }
+    SeverityParam:
+      name: severity
+      in: query
+      required: false
+      schema: { type: string, example: P1 }
+    AppCodeParam:
+      name: app_code
+      in: query
+      required: false
+      schema: { type: string, example: RTGS }
+
+    IncidentIdPath:
+      name: incident_id
+      in: path
+      required: true
+      schema: { type: string, example: INC-20260106-0001 }
+    WorkorderIdPath:
+      name: workorder_id
+      in: path
+      required: true
+      schema: { type: string, example: WO-20260106-0101 }
+    CertIdPath:
+      name: cert_id
+      in: path
+      required: true
+      schema: { type: string, example: CERT-0009 }
+    ContractIdPath:
+      name: contract_id
+      in: path
+      required: true
+      schema: { type: string, example: CTR-2026-0012 }
+    DrpIdPath:
+      name: drp_id
+      in: path
+      required: true
+      schema: { type: string, example: DRP-2026-RTGS-01 }
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+      required: [detail]
+
+    # ---------- Summary ----------
+    SummaryResponse:
+      type: object
+      required: [generated_at, ops_status, incidents, execution, risk, governance, people]
+      properties:
+        generated_at:
+          type: string
+          format: date-time
+        ops_status:
+          type: string
+          enum: [NORMAL, DEGRADED, CRITICAL]
+        highlights:
+          type: array
+          items: { type: string }
+        incidents:
+          $ref: "#/components/schemas/SummaryIncidents"
+        execution:
+          $ref: "#/components/schemas/SummaryExecution"
+        risk:
+          $ref: "#/components/schemas/SummaryRisk"
+        governance:
+          $ref: "#/components/schemas/SummaryGovernance"
+        people:
+          $ref: "#/components/schemas/SummaryPeople"
+        delta:
+          type: array
+          items:
+            $ref: "#/components/schemas/DeltaItem"
+
+    SummaryIncidents:
+      type: object
+      required: [p1_open, open_total, sla_breached, sla_at_risk]
+      properties:
+        p1_open: { type: integer, minimum: 0 }
+        open_total: { type: integer, minimum: 0 }
+        sla_breached: { type: integer, minimum: 0 }
+        sla_at_risk: { type: integer, minimum: 0 }
+
+    SummaryExecution:
+      type: object
+      required: [workorders_open, workorders_overdue, blocked]
+      properties:
+        workorders_open: { type: integer, minimum: 0 }
+        workorders_overdue: { type: integer, minimum: 0 }
+        blocked: { type: integer, minimum: 0 }
+
+    SummaryRisk:
+      type: object
+      required: [cert_expiring_30d, contracts_renewal_due, payments_window_open]
+      properties:
+        cert_expiring_30d: { type: integer, minimum: 0 }
+        contracts_renewal_due: { type: integer, minimum: 0 }
+        payments_window_open: { type: integer, minimum: 0 }
+
+    SummaryGovernance:
+      type: object
+      required: [drp_due, drp_overdue, access_reviews_due]
+      properties:
+        drp_due: { type: integer, minimum: 0 }
+        drp_overdue: { type: integer, minimum: 0 }
+        access_reviews_due: { type: integer, minimum: 0 }
+
+    SummaryPeople:
+      type: object
+      required: [on_call, absent_today, absent_week]
+      properties:
+        on_call:
+          $ref: "#/components/schemas/OnCallPerson"
+        absent_today: { type: integer, minimum: 0 }
+        absent_week: { type: integer, minimum: 0 }
+
+    DeltaItem:
+      type: object
+      required: [type, message, at]
+      properties:
+        type:
+          type: string
+          enum: [INCIDENT, WORKORDER, CERT, CONTRACT, DRP, ACCESS, PEOPLE]
+        message:
+          type: string
+        at:
+          type: string
+          format: date-time
+
+    OnCallPerson:
+      type: object
+      required: [name, role]
+      properties:
+        name: { type: string, example: Coco }
+        role: { type: string, example: Primary }
+
+    # ---------- Incidents ----------
+    IncidentListResponse:
+      type: object
+      required: [items, limit, offset, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/IncidentItem"
+        limit: { type: integer }
+        offset: { type: integer }
+        total: { type: integer, minimum: 0 }
+
+    IncidentItem:
+      type: object
+      required: [id, severity, status, title, app_code, opened_at, sla_state]
+      properties:
+        id: { type: string, example: INC-20260106-0001 }
+        severity: { type: string, example: P1 }
+        status: { type: string, example: OPEN }
+        title: { type: string }
+        app_code: { type: string, example: RTGS }
+        owner_team: { type: string, example: OpDA }
+        opened_at:
+          type: string
+          format: date-time
+        sla_due_at:
+          type: string
+          format: date-time
+          nullable: true
+        sla_state:
+          type: string
+          enum: [ON_TRACK, AT_RISK, BREACHED]
+
+    IncidentDetail:
+      allOf:
+        - $ref: "#/components/schemas/IncidentItem"
+        - type: object
+          properties:
+            description: { type: string }
+            linked_workorders:
+              type: array
+              items: { type: string }
+            events:
+              type: array
+              items:
+                $ref: "#/components/schemas/IncidentEvent"
+
+    IncidentEvent:
+      type: object
+      required: [at, type, by]
+      properties:
+        at:
+          type: string
+          format: date-time
+        type:
+          type: string
+          example: ACK
+        by:
+          type: string
+          example: coco
+
+    # ---------- Workorders ----------
+    WorkorderListResponse:
+      type: object
+      required: [items, limit, offset, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkorderItem"
+        limit: { type: integer }
+        offset: { type: integer }
+        total: { type: integer, minimum: 0 }
+
+    WorkorderItem:
+      type: object
+      required: [id, status, title, created_at, sla_state]
+      properties:
+        id: { type: string, example: WO-20260106-0101 }
+        status: { type: string, example: IN_PROGRESS }
+        title: { type: string }
+        incident_id: { type: string, nullable: true }
+        assignee: { type: string, nullable: true, example: coco }
+        created_at:
+          type: string
+          format: date-time
+        due_at:
+          type: string
+          format: date-time
+          nullable: true
+        sla_state:
+          type: string
+          enum: [ON_TRACK, AT_RISK, BREACHED]
+        app_code: { type: string, nullable: true }
+
+    WorkorderDetail:
+      allOf:
+        - $ref: "#/components/schemas/WorkorderItem"
+        - type: object
+          properties:
+            notes:
+              type: array
+              items:
+                $ref: "#/components/schemas/WorkorderNote"
+
+    WorkorderNote:
+      type: object
+      required: [at, by, message]
+      properties:
+        at:
+          type: string
+          format: date-time
+        by:
+          type: string
+        message:
+          type: string
+
+    # ---------- Certificates ----------
+    CertificateListResponse:
+      type: object
+      required: [items, limit, offset, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CertificateItem"
+        limit: { type: integer }
+        offset: { type: integer }
+        total: { type: integer, minimum: 0 }
+
+    CertificateItem:
+      type: object
+      required: [id, common_name, system, expires_at, status]
+      properties:
+        id: { type: string, example: CERT-0009 }
+        common_name: { type: string, example: api.opda.local }
+        system: { type: string, example: OPDA }
+        owner_team: { type: string, nullable: true }
+        expires_at:
+          type: string
+          format: date-time
+        renewal_window_start:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          type: string
+          enum: [OK, DUE_SOON, OVERDUE]
+
+    CertificateDetail:
+      allOf:
+        - $ref: "#/components/schemas/CertificateItem"
+        - type: object
+          properties:
+            issuer: { type: string, nullable: true }
+            last_renewed_at:
+              type: string
+              format: date-time
+              nullable: true
+            renewal_owner: { type: string, nullable: true }
+
+    # ---------- Contracts ----------
+    ContractListResponse:
+      type: object
+      required: [items, limit, offset, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContractItem"
+        limit: { type: integer }
+        offset: { type: integer }
+        total: { type: integer, minimum: 0 }
+
+    ContractItem:
+      type: object
+      required: [id, vendor, scope, start_date, end_date, status]
+      properties:
+        id: { type: string, example: CTR-2026-0012 }
+        vendor: { type: string, example: PT MII }
+        scope: { type: string }
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        renewal_initiate_by:
+          type: string
+          format: date
+          nullable: true
+        payment_window:
+          $ref: "#/components/schemas/PaymentWindow"
+        status:
+          type: string
+          example: RENEWAL_NOT_STARTED
+
+    PaymentWindow:
+      type: object
+      properties:
+        start: { type: string, format: date, nullable: true }
+        end: { type: string, format: date, nullable: true }
+
+    ContractDetail:
+      allOf:
+        - $ref: "#/components/schemas/ContractItem"
+        - type: object
+          properties:
+            linked_systems:
+              type: array
+              items: { type: string }
+            documents:
+              type: array
+              items:
+                $ref: "#/components/schemas/DocMeta"
+
+    DocMeta:
+      type: object
+      required: [type, name, uploaded_at]
+      properties:
+        type: { type: string, example: SOW }
+        name: { type: string, example: SOW_2026.pdf }
+        uploaded_at:
+          type: string
+          format: date-time
+
+    # ---------- DRP ----------
+    DrpListResponse:
+      type: object
+      required: [items, limit, offset, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/DrpItem"
+        limit: { type: integer }
+        offset: { type: integer }
+        total: { type: integer, minimum: 0 }
+
+    DrpItem:
+      type: object
+      required: [id, system, type, planned_date, status]
+      properties:
+        id: { type: string, example: DRP-2026-RTGS-01 }
+        system: { type: string, example: RTGS }
+        type: { type: string, example: FULL }
+        planned_date:
+          type: string
+          format: date
+        status: { type: string, example: PLANNED }
+        last_successful:
+          type: string
+          format: date
+          nullable: true
+        evidence_status:
+          type: string
+          enum: [NOT_UPLOADED, UPLOADED]
+
+    DrpDetail:
+      allOf:
+        - $ref: "#/components/schemas/DrpItem"
+        - type: object
+          properties:
+            runbook: { type: string, nullable: true }
+            results:
+              $ref: "#/components/schemas/DrpResults"
+            evidence:
+              type: array
+              items:
+                $ref: "#/components/schemas/DocMeta"
+
+    DrpResults:
+      type: object
+      properties:
+        rto_minutes: { type: integer, nullable: true }
+        rpo_minutes: { type: integer, nullable: true }
+        status: { type: string, nullable: true, example: PASS }
+
+    # ---------- Access ----------
+    AccessReviewListResponse:
+      type: object
+      required: [items, limit, offset, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/AccessReviewItem"
+        limit: { type: integer }
+        offset: { type: integer }
+        total: { type: integer, minimum: 0 }
+
+    AccessReviewItem:
+      type: object
+      required: [id, system, due_at, status, owner]
+      properties:
+        id: { type: string, example: AR-2026-01-CBS }
+        system: { type: string, example: CBS }
+        review_period: { type: string, nullable: true, example: 2026-H1 }
+        due_at:
+          type: string
+          format: date
+        status: { type: string, example: DUE }
+        owner: { type: string, example: OpDA }
+
+    AccessMatrixListResponse:
+      type: object
+      required: [items, limit, offset, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/AccessMatrixItem"
+        limit: { type: integer }
+        offset: { type: integer }
+        total: { type: integer, minimum: 0 }
+
+    AccessMatrixItem:
+      type: object
+      required: [system, user, role, privileged]
+      properties:
+        system: { type: string, example: CBS }
+        user: { type: string, example: user.a }
+        role: { type: string, example: DBA }
+        privileged: { type: boolean, example: true }
+        granted_at:
+          type: string
+          format: date
+          nullable: true
+
+    # ---------- On-call ----------
+    OnCallToday:
+      type: object
+      required: [date, primary, secondary]
+      properties:
+        date:
+          type: string
+          format: date
+        primary:
+          $ref: "#/components/schemas/OnCallContact"
+        secondary:
+          $ref: "#/components/schemas/OnCallContact"
+        escalation:
+          type: array
+          items:
+            $ref: "#/components/schemas/EscalationEntry"
+
+    OnCallContact:
+      type: object
+      required: [name, team]
+      properties:
+        name: { type: string, example: Coco }
+        team: { type: string, example: OpDA }
+        contact: { type: string, nullable: true, example: "+62xxxx" }
+
+    EscalationEntry:
+      type: object
+      required: [level, role, name]
+      properties:
+        level: { type: integer, example: 1 }
+        role: { type: string, example: Shift Lead }
+        name: { type: string, example: Welly }
+
+    # ---------- People ----------
+    AbsenceListResponse:
+      type: object
+      required: [range, items]
+      properties:
+        range: { type: string, example: week }
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/AbsenceItem"
+
+    AbsenceItem:
+      type: object
+      required: [name, from, to]
+      properties:
+        name: { type: string, example: Teresa }
+        from: { type: string, format: date }
+        to: { type: string, format: date }
+        reason: { type: string, nullable: true, example: Leave }
+        team: { type: string, nullable: true, example: OpDA }
+
+    BirthdayListResponse:
+      type: object
+      required: [range, items]
+      properties:
+        range: { type: string, example: week }
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/BirthdayItem"
+
+    BirthdayItem:
+      type: object
+      required: [name, date]
+      properties:
+        name: { type: string, example: Coco }
+        date: { type: string, format: date }
+        team: { type: string, nullable: true, example: OpDA }
+
+    # ---------- Utility / Lookup ----------
+    MeResponse:
+      type: object
+      required: [username, roles]
+      properties:
+        username: { type: string, example: coco }
+        roles:
+          type: array
+          items: { type: string }
+          example: ["OPDA_MANAGER"]
+
+    AppLookupResponse:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/AppLookupItem"
+
+    AppLookupItem:
+      type: object
+      required: [code, name]
+      properties:
+        code: { type: string, example: RTGS }
+        name: { type: string, example: BI-RTGS }
