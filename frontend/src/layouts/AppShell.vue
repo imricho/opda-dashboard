@@ -1,39 +1,39 @@
 <template>
   <div class="page">
-    <!-- Sidebar -->
-    <aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark">
-      <div class="container-fluid">
-        <h1 class="navbar-brand navbar-brand-autodark">
-          <a href="#" class="text-decoration-none text-white">
-            OPDA Dashboard
-          </a>
-        </h1>
+<!--    &lt;!&ndash; Sidebar &ndash;&gt;-->
+<!--    <aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark">-->
+<!--      <div class="container-fluid">-->
+<!--        <h1 class="navbar-brand navbar-brand-autodark">-->
+<!--          <a href="#" class="text-decoration-none text-white">-->
+<!--            OPDA Dashboard-->
+<!--          </a>-->
+<!--        </h1>-->
 
-        <div class="collapse navbar-collapse show">
-          <ul class="navbar-nav pt-lg-3">
+<!--        <div class="collapse navbar-collapse show">-->
+<!--          <ul class="navbar-nav pt-lg-3">-->
 
-            <li class="nav-item">
-              <RouterLink class="nav-link" to="/">
-                <span class="nav-link-title">Summary</span>
-              </RouterLink>
-            </li>
+<!--            <li class="nav-item">-->
+<!--              <RouterLink class="nav-link" to="/">-->
+<!--                <span class="nav-link-title">Summary</span>-->
+<!--              </RouterLink>-->
+<!--            </li>-->
 
-            <li class="nav-item">
-              <RouterLink class="nav-link" to="/incidents">
-                <span class="nav-link-title">Incidents</span>
-              </RouterLink>
-            </li>
+<!--            <li class="nav-item">-->
+<!--              <RouterLink class="nav-link" to="/incidents">-->
+<!--                <span class="nav-link-title">Incidents</span>-->
+<!--              </RouterLink>-->
+<!--            </li>-->
 
-            <li class="nav-item">
-              <RouterLink class="nav-link" to="/workorders">
-                <span class="nav-link-title">Workorders</span>
-              </RouterLink>
-            </li>
+<!--            <li class="nav-item">-->
+<!--              <RouterLink class="nav-link" to="/workorders">-->
+<!--                <span class="nav-link-title">Workorders</span>-->
+<!--              </RouterLink>-->
+<!--            </li>-->
 
-          </ul>
-        </div>
-      </div>
-    </aside>
+<!--          </ul>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </aside>-->
 
     <!-- Main content -->
     <div class="page-wrapper">

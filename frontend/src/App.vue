@@ -1,21 +1,19 @@
-<script setup lang="ts">
-</script>
-
 <template>
-  <router-view />
+  <div class="page">
+    <!-- HEADER -->
+    <AppHeader />
+
+    <!-- MAIN CONTENT -->
+    <div class="page-wrapper">
+      <div class="page-body">
+        <div class="container-xl py-3">
+          <router-view />
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+<script setup lang="ts">
+import AppHeader from "@/components/AppHeader.vue";
+</script>
