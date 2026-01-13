@@ -99,6 +99,7 @@
           </li>
 
           <li class="nav-item"><router-link class="nav-link" to="/contracts"><span class="nav-link-title">Contracts</span></router-link></li>
+          <li class="nav-item"><router-link class="nav-link" to="/servers"><span class="nav-link-title">Servers</span></router-link></li>
           <li class="nav-item"><a class="nav-link" href="#"><span class="nav-link-title">Layout</span></a></li>
           <li class="nav-item"><a class="nav-link" href="#"><span class="nav-link-title">Plugins</span></a></li>
           <li class="nav-item"><a class="nav-link" href="#"><span class="nav-link-title">Addons</span></a></li>
