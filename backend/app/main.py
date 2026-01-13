@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.shared.feature_loader import register_feature_routers
 from app.auth.keycloak import get_current_user
 
-app = FastAPI(title="OPDA Dashboard API")
+app = FastAPI(title="OPDeck")
 
 app.add_middleware(
     CORSMiddleware,
