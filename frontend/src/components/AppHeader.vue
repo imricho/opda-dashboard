@@ -2,7 +2,7 @@
   <header class="navbar navbar-expand-md navbar-light d-print-none">
     <div class="container-xl">
       <!-- Brand -->
-      <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="/#">
         <span class="avatar avatar-sm bg-primary-lt">op</span>
         <span class="fw-bold">opda</span>
       </a>
@@ -100,6 +100,7 @@
 
           <li class="nav-item"><router-link class="nav-link" to="/contracts"><span class="nav-link-title">Contracts</span></router-link></li>
           <li class="nav-item"><router-link class="nav-link" to="/servers"><span class="nav-link-title">Servers</span></router-link></li>
+          <li class="nav-item"><router-link class="nav-link" to="/certificates"><span class="nav-link-title">Certificates</span></router-link></li>
           <li class="nav-item"><a class="nav-link" href="#"><span class="nav-link-title">Layout</span></a></li>
           <li class="nav-item"><a class="nav-link" href="#"><span class="nav-link-title">Plugins</span></a></li>
           <li class="nav-item"><a class="nav-link" href="#"><span class="nav-link-title">Addons</span></a></li>

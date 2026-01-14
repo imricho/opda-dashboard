@@ -4,6 +4,7 @@ import ContractManagementPage from "@/pages/contracts/ContractManagementPage.vue
 import IncidentPage from "@/pages/incidents/IncidentPage.vue";
 import ServerManagementPage from "@/pages/servers/ServerManagementPage.vue";
 import WorkerPage from "@/pages/workorder/WorkorderPage.vue";
+import CertificateManagementPage from "@/pages/certificates/CertificateManagementPage.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -12,6 +13,7 @@ const router = createRouter({
         { path: "/incidents", name: "incidents", component: IncidentPage },
         { path: "/contracts", name: "incidents", component: ContractManagementPage },
         { path: "/servers", name: "servers", component: ServerManagementPage },
+        { path: "/certificates", name: "certificates", component: CertificateManagementPage },
         { path: "/workorders", name: "workorders", component: WorkerPage }
     ]
 });
