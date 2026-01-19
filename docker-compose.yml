@@ -72,6 +72,32 @@ services:
       - keycloak
     networks: [opda-net]
 
+  notification-worker:
+    image: opda-dashboard-backend:latest
+    container_name: opda-notif-worker
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    environment:
+      # Select provider: mock | whatsapp
+      NOTIF_PROVIDER: ${NOTIF_PROVIDER:-mock}
+
+      # Worker tuning
+      NOTIF_WORKER_POLL_SECONDS: ${NOTIF_WORKER_POLL_SECONDS:-5}
+      NOTIF_WORKER_BATCH_SIZE: ${NOTIF_WORKER_BATCH_SIZE:-20}
+      NOTIF_WORKER_MAX_ATTEMPTS: ${NOTIF_WORKER_MAX_ATTEMPTS:-6}
+
+      # WhatsApp settings (only needed if NOTIF_PROVIDER=whatsapp)
+      WA_TOKEN: ${WA_TOKEN:-}
+      WA_PHONE_NUMBER_ID: ${WA_PHONE_NUMBER_ID:-}
+      WA_BASE_URL: ${WA_BASE_URL:-https://graph.facebook.com/v21.0}
+
+      # DB
+      DATABASE_URL: ${DATABASE_URL}
+    command: ["python", "-m", "app.features.notifications.worker"]
+    restart: unless-stopped
+
 networks:
   opda-net:
 
